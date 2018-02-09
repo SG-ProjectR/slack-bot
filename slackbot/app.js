@@ -2,12 +2,6 @@
  * Created by singyujo on 2016-12-01.
  */
 
-
-// let privateKey = {
-//    RtmClient: 'xoxb-111815468870-YEwDPbCLRV0DHiTpqFXdwbNW',
-//    Slack: 'xoxp-98755010768-100173034790-110483599297-91926fe74373b2abc936d3e450b3f5ca'
-// }
-
 let privateKey = require('./config.js');
 
 var RtmClient = require('@slack/client').RtmClient;
