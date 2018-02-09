@@ -1,0 +1,10 @@
+{
+  "name": "dead-slack-bot",
+  "version": "0.0.1",
+  "dependencies": {
+    "@slack/client": "^3.6.1",
+    "htmlencode": "0.0.4",
+    "slack-node": "^0.1.8",
+    "urlencode": "^1.1.0"
+  }
+}
