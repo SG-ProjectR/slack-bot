@@ -35,33 +35,45 @@ onenoteLinkHandler = function (msg) {
 
     // 원노트 링크
     //onenote:///P:\OneNote\DP\01_업무\자료.one#aaaaa%20모드&section-id={C2DC2369-588E-41FE-A1CA-B615089D2F4E}&page-id={0B4526AD-4388-4A96-BA5F-D70965453227}&end
-    var captures = /^onenote:\/\/\/.+\\([^\\]+)[.]one#([^&]+&amp;)?section-id=/g.exec(msg.text);
+    var captures = /onenote:\/\/\/.+\\([^\\]+)[.]one#([^&]+&amp;)?section-id=.+end/g.exec(msg.text);
     if (!captures) return false;
 
     var noteName = decodeURIComponent(captures[2] ? captures[2].substr(0, captures[2].length - 5) : captures[1]);
     console.log(noteName);
-    slack.api('chat.delete', {
-        ts : msg.ts,
-        channel : msg.channel,
-    }, function (e, r) {
-        // console.log(e, r);
-    });
-    var user = rtm.dataStore.getUserById(msg.user);
+    // slack.api('chat.delete', {
+    //     ts : msg.ts,
+    //     channel : msg.channel,
+    // }, function (e, r) {
+    //     // console.log(e, r);
+    // });
+    // var user = rtm.dataStore.getUserById(msg.user);
 
     // 크롬64 버전부터 원노트 링크 동작을 안하는 문제가 있어서 윈도우에 별도의 프로토콜 등록 후 해당 프로토콜 핸들러 프로그램에서 원노트 오픈
-    var lnk = htmlDecode(msg.text.replace('onenote:', 'onenotelinker:'));
+    var lnk = htmlDecode(captures[0].replace('onenote:', 'onenotelinker:'));
     //console.log(lnk);
     lnk = encodeURIComponent(lnk);
     // var postMsg = `원노트 링크 "<http://localhost:9292/?${lnk}|${noteName}>" 공유합니다. `;
     var postMsg = `원노트 링크 "<http://dev_dp-d:9292/?${lnk}|${noteName}>" 공유합니다. `;
-    // console.log(postMsg);
-    slack.api('chat.postMessage', {
+
+    postMsg = msg.text.replace(/onenote:\/\/\/.+\\([^\\]+)[.]one#([^&]+&amp;)?section-id=.+end/g, ` <http://dev_dp-d:9292/?${lnk}|:orange_book:${noteName}> `)
+    console.log(msg);
+    slack.api('chat.update', {
         channel : msg.channel,
         text : postMsg,
-        as_user : false,
-        icon_url : user.profile.image_48,//'https://ca.slack-edge.com/T2WN70ANL-U39PZDSRL-9340acd3abda-48',
-        username : user.real_name,
+        ts : msg.ts,
+        parse : 'none'
+    }, function (e, r) {
+    	console.log(e, r);
     });
+
+
+    // slack.api('chat.postMessage', {
+    //     channel : msg.channel,
+    //     text : postMsg,
+    //     as_user : false,
+    //     icon_url : user.profile.image_48,//'https://ca.slack-edge.com/T2WN70ANL-U39PZDSRL-9340acd3abda-48',
+    //     username : user.real_name,
+    // });
     return true;
 }
 
